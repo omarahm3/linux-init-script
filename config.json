@@ -1,0 +1,17 @@
+{
+  "configuration": {
+    "owner": "Omar",
+    "programs": [
+      "google-chrome",
+      "phpstorm",
+      "slack"
+    ],
+    "servers": [
+      {
+        "name": "myproject",
+        "path": "/media/botme/some-server",
+        "command": "php bin/console server:run"
+      }
+    ]
+  } 
+}
