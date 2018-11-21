@@ -1,0 +1,5 @@
+*.log
+*.pyc
+*.local.json
+/logs
+pids.json
