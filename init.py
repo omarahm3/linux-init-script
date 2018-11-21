@@ -1,9 +1,8 @@
 import os
 import subprocess
-import json
-from pprint import pprint
 import progressbar
 from time import sleep
+import helper
 
 
 def handleChoice(choice):
@@ -11,13 +10,6 @@ def handleChoice(choice):
     "1": loadPrograms,
     "2": loadServers
   }.get(str(choice), None)
-
-def openProgram(program):
-  subprocess.Popen([str(program)], stdout=open('logs.log', 'w'), stderr=open('errors.log', 'a'), preexec_fn=os.setpgrp)
-
-def loadConfigFile():
-  with open('config.json') as file:
-    return json.load(file)['configuration']
 
 def loadPrograms(config):
   subprocess.Popen(["clear"])
@@ -27,17 +19,11 @@ def loadPrograms(config):
   length = len(config['programs'])
   progressbar.print_progress(0, 1, prefix = 'Progress:', suffix = 'Complete', bar_length = 50)
   for i, program in enumerate(config['programs']):
-    openProgram(program)
+    helper.openProgram(program)
     sleep(0.2)
     progressbar.print_progress(i + 1, length, prefix = 'Progress:', suffix = 'Complete', bar_length = 50)
   print "\033[0;37;48mOpening complete, check errors.log to see if there are any errors"
   print "\033[0;37;48m--------------\n"
-
-def openServer(server):
-  os.chdir(str(server['path']))
-  logFile   = str(server['name']) + "-logs.log"
-  errorLogs = str(server['name']) + "-errors.log"
-  subprocess.Popen(str(server['command']).split(), stdout=open(logFile, 'w'), stderr=open(errorLogs, 'a'), preexec_fn=os.setpgrp)
 
 def loadServers(config):
   subprocess.Popen(["clear"])
@@ -47,7 +33,8 @@ def loadServers(config):
   length = len(config['programs'])
   progressbar.print_progress(0, 1, prefix = 'Progress:', suffix = 'Complete', bar_length = 50)
   for i, server in enumerate(config['servers']):
-    openServer(server)
+    pid = helper.openServer(server)
+    helper.saveProcessId(server['name'], pid)
     sleep(0.2)
     progressbar.print_progress(i + 1, length, prefix = 'Progress:', suffix = 'Complete', bar_length = 50)
   print "\033[0;37;48mOpening complete, check logs associated with each server"
@@ -56,7 +43,8 @@ def loadServers(config):
 print "\n\n\033[1;30;40m-- Initializing..."
 print "\033[1;30;40m-- Reading configuration...\n"
 
-config = loadConfigFile()
+config = helper.loadConfigFile()
+helper.createLogDirectory()
 
 print "\033[1;33;40m          Hi there, i'm " + config['owner'] + "'s virtual initializer."
 print "\033[1;33;40mI'll help you opening common programs and initializing dev servers"
