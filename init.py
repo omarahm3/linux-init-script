@@ -8,7 +8,8 @@ import helper
 def handleChoice(choice):
   return {
     "1": loadPrograms,
-    "2": loadServers
+    "2": loadServers,
+    "3": killServers
   }.get(str(choice), None)
 
 def loadPrograms(config):
@@ -30,7 +31,7 @@ def loadServers(config):
   sleep(0.1)
   print "\n\n\033[0;37;48m--------------"
   print "\033[0;37;48mOpening registered servers"
-  length = len(config['programs'])
+  length = len(config['servers'])
   progressbar.print_progress(0, 1, prefix = 'Progress:', suffix = 'Complete', bar_length = 50)
   for i, server in enumerate(config['servers']):
     pid = helper.openServer(server)
@@ -43,6 +44,15 @@ def loadServers(config):
 print "\n\n\033[1;30;40m-- Initializing..."
 print "\033[1;30;40m-- Reading configuration...\n"
 
+
+def killServers(config):
+  subprocess.Popen(["clear"])
+  sleep(0.1)
+  print "\n\n\033[0;37;48m--------------"
+  print "\033[0;37;48mKilling all running servers"
+  helper.killAllServers()
+
+
 config = helper.loadConfigFile()
 helper.createLogDirectory()
 
@@ -53,16 +63,20 @@ print "\033[1;33;40m            ----------------------------------"
 # loadPrograms(config)
 
 
-while True:
-  print "\n\033[1;34;40m[1] Load Programs"
-  print "\033[1;34;40m[2] Load Servers"
+try: 
+  while True:
+    print "\n\033[1;34;40m[1] Load Programs"
+    print "\033[1;34;40m[2] Load Servers"
+    print "\033[1;34;40m[3] Kill All Servers"
 
-  choice = raw_input("\n\033[1;37;40mType the number corresponding to your choice: ")
-  function = handleChoice(choice)
+    choice = raw_input("\n\033[1;37;40mType the number corresponding to your choice: ")
+    function = handleChoice(choice)
 
-  if function is None or not callable(function):
-    print "\n\033[1;31;40mOh, you entered unknown number, please check again.\n"
+    if function is None or not callable(function):
+      print "\n\033[1;31;40mOh, you entered unknown number, please check again.\n"
 
-  if callable(function):
-    function(config)
-  
+    if callable(function):
+      function(config)
+
+except:
+  print "\n\nOkay Bye Bye :("

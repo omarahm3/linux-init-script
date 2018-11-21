@@ -1,6 +1,7 @@
 import os
 import json
 import subprocess
+import signal
 
 SCRIPT_CWD = os.getcwd()
 
@@ -15,16 +16,19 @@ def createCustomLogDirectory(directoryName):
   if not os.path.exists(getCwd() + "/logs/" + str(directoryName)):
     os.makedirs(getCwd() + "/logs/" + str(directoryName))
 
-def loadConfigFile():
+def initializePidsFile(init = False):
   pidsPath = getCwd() + '/pids.json'
   # Create pids file
   if not os.path.isfile(pidsPath):
     with open(pidsPath, 'w'): pass
 
-  # Init pids json file only if its empty
-  if os.stat(pidsPath).st_size == 0:
+  # Init pids json file only if its empty or init flag is true
+  if os.stat(pidsPath).st_size == 0 or init == True:
     with open(pidsPath, mode='w') as f:
       json.dump([], f)
+
+def loadConfigFile():
+  initializePidsFile()
 
   # Loads configuration file
   with open(getCwd() + '/config.local.json') as file:
@@ -46,6 +50,18 @@ def saveProcessId(serverName, pid):
       'pid': pid
     })
     json.dump(pids, pidsJson)
+
+def killAllServers():
+  location = getCwd() + "/pids.json"
+  with open(location, mode='r') as pidsJson:
+    pids = json.load(pidsJson)
+    for server in pids:
+      print server['name']
+      try: 
+        os.killpg(int(server['pid']), signal.SIGKILL)
+      except:
+        print "Server " + server['name'] + " is not running to terminate.."
+  initializePidsFile(init=True)
 
 def openServer(server):
   os.chdir(str(server['path']))
