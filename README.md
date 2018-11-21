@@ -10,7 +10,7 @@ This python script should help easily open your daily use programs or/and develo
 
 You'll only need to do two things
 
-1. Just run `$ lazysqiurrel --help` whatever you are
+1. Just run `$ lazysqiurrel --help` wherever you are
 
 2. Contribute, or report me if you feel that there is something needs to be changed or added.
 
