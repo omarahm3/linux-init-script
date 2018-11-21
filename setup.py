@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='lazysquirrel',
-      version='0.1',
+      version='0.2',
       description='Initialize your programs & servers in one click',
       url='https://github.com/omarking05/linux-init-script',
       author='Omar Ahmed',
