@@ -6,7 +6,7 @@ This python script should help easily open your daily use programs or/and develo
 
 You'll only need to do two things
 
-1. Change `config.json` file, and add your name, programs, and servers.
+1. Copy `config.json`, name it `config.local.json` file, and add your name, programs, and servers.
 
    ```json
    "configuration": {
